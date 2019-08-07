@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  server:
+    build: .
+  rabbitmq:
+    image: "rabbitmq:3.8-rc-alpine"
+    hostname: rabbit
+    ports:
+      - "5672:5672"
