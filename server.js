@@ -5,6 +5,7 @@ const os = require("os");
 
 //Run heartbeat check every 10 seconds
 const sendContainerIdToOthers = () => {
+  console.log(`My id is ${os.hostname()}`);
   amqp.connect("amqp://localhost", (error0, connection) => {
     if (error0) throw error0;
     connection.createChannel((error1, channel) => {
