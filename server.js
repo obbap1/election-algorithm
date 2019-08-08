@@ -6,7 +6,7 @@ const os = require("os");
 //Run heartbeat check every 10 seconds
 const sendContainerIdToOthers = () => {
   console.log(`My id is ${os.hostname()}`);
-  amqp.connect("amqp://localhost", (error0, connection) => {
+  amqp.connect("amqp://guest:guest@172.22.0.2", (error0, connection) => {
     if (error0) throw error0;
     connection.createChannel((error1, channel) => {
       if (error1) throw error1;
@@ -17,16 +17,16 @@ const sendContainerIdToOthers = () => {
 
       channel.publish('logs', '', Buffer.from(msg));
 
-      channel.assertQueue(queue, {exclusive: true});
+      channel.assertQueue('', {exclusive: true});
 
-      channel.bindQueue(queue, 'logs', '');
+      channel.bindQueue('', 'logs', '');
     });
   });
 };
 
 const sendElectionRequest = () => {};
 
-amqp.connect('amqp://localhost',(error0, connection) => {
+amqp.connect('amqp://guest:guest@172.22.0.2',(error0, connection) => {
     if(error0) throw error0;
     connection.createChannel((error1, channel) => {
         if(error1) throw error1;
@@ -38,7 +38,7 @@ amqp.connect('amqp://localhost',(error0, connection) => {
             console.log(`Waiting for messages in ${q.queue}`);
             channel.bindQueue(q.queue,exchange,'');
             channel.consume(q.queue, (msg) => {
-                if(msg.content) console.log(`${msg.content.toString()}`);
+                if(msg.content) console.log(`received: ${msg.content.toString()}`);
             },{
                 noAck: true
             });
@@ -46,4 +46,4 @@ amqp.connect('amqp://localhost',(error0, connection) => {
     });
 });
 
-cron.schedule('10 * * * * *', sendContainerIdToOthers());
+cron.schedule('10 * * * * *', () => sendContainerIdToOthers());
