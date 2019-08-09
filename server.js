@@ -66,5 +66,5 @@ amqp.connect(url, (error0, connection) => {
   });
 });
 
-//Run every 10 seconds
+//Send message every 10 seconds
 cron.schedule("10 * * * * *", () => sendContainerIdToOthers());
